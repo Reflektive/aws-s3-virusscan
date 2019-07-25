@@ -721,9 +721,8 @@ Resources:
                               if exitstatus == 0 # No virus found.
                                 if conf['report_clean']
                                   publish_notification(bucket, key, CLEAN_STATUS);
-                                else
-                                  log.info "s3://#{bucket}/#{key} is clean"
                                 end
+                                log.info "s3://#{bucket}/#{key} is clean"
                                 if conf['tag_files']
                                   s3.put_object_tagging({
                                       bucket: bucket,
@@ -733,6 +732,7 @@ Resources:
                                 end
                               elsif exitstatus == 1 # Virus(es) found.
                                 publish_notification(bucket, key, INFECTED_STATUS);
+                                log.info "s3://#{bucket}/#{key} is infected"
                                 if conf['delete']
                                   s3.delete_object(
                                     bucket: bucket,
