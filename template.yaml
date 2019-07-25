@@ -719,10 +719,10 @@ Resources:
                               system("clamdscan #{fileName}")
                               exitstatus = $?.exitstatus
                               if exitstatus == 0 # No virus found.
+                                log.info "s3://#{bucket}/#{key} is clean"
                                 if conf['report_clean']
                                   publish_notification(bucket, key, CLEAN_STATUS);
                                 end
-                                log.info "s3://#{bucket}/#{key} is clean"
                                 if conf['tag_files']
                                   s3.put_object_tagging({
                                       bucket: bucket,
@@ -731,8 +731,8 @@ Resources:
                                   })
                                 end
                               elsif exitstatus == 1 # Virus(es) found.
-                                publish_notification(bucket, key, INFECTED_STATUS);
                                 log.info "s3://#{bucket}/#{key} is infected"
+                                publish_notification(bucket, key, INFECTED_STATUS);
                                 if conf['delete']
                                   s3.delete_object(
                                     bucket: bucket,
